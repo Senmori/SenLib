@@ -12,15 +12,15 @@ import java.util.List;
 public class VectorOption extends ConfigOption<Vector> {
 
     public static VectorOption newOption(String key, int defaultRadius) {
-        return new VectorOption(key, new Vector(defaultRadius, defaultRadius, defaultRadius), Vector.class);
+        return new VectorOption(key, new Vector(defaultRadius, defaultRadius, defaultRadius));
     }
 
     public static VectorOption newOption(String key, Vector defaultVector) {
-        return new VectorOption(key, defaultVector, Vector.class);
+        return new VectorOption(key, defaultVector);
     }
 
-    public VectorOption(String key, Vector defaultValue, Class<Vector> typeClass) {
-        super(key, defaultValue, typeClass);
+    public VectorOption(String key, Vector defaultValue) {
+        super(key, defaultValue, Vector.class);
     }
 
     @Override
