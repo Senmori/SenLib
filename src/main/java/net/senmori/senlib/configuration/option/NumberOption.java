@@ -4,9 +4,6 @@ import net.senmori.senlib.configuration.ConfigOption;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
 public class NumberOption extends ConfigOption<Number> {
 
     public static NumberOption newOption(String key, Number defaultValue) {
@@ -22,12 +19,12 @@ public class NumberOption extends ConfigOption<Number> {
         if(!config.contains(getPath())) return false;
 
         String str = config.getString(getPath());
-        if(str != null && !str.isEmpty() && NumberUtils.isNumber(str)) {
+        if(str != null && !str.isEmpty() && NumberUtils.isParsable(str)) {
             // it's a number
             try {
-                setValue(NumberFormat.getInstance().parse(str));
+                setValue(NumberUtils.createNumber(str));
                 return true;
-            } catch (ParseException e) {
+            } catch (NumberFormatException e) {
                 return false;
             }
         }

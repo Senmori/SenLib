@@ -9,7 +9,7 @@ public class BooleanOption extends ConfigOption<Boolean> {
         return new BooleanOption(key, defaultValue);
     }
 
-    protected BooleanOption(String key, Boolean defaultValue) {
+    public BooleanOption(String key, Boolean defaultValue) {
         super(key, defaultValue, Boolean.class);
     }
 

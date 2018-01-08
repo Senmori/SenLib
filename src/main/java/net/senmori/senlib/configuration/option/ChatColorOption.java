@@ -12,7 +12,7 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
         return new ChatColorOption(key, defaultValue);
     }
 
-    protected ChatColorOption(String key, ChatColor defaultValue) {
+    public ChatColorOption(String key, ChatColor defaultValue) {
         super(key, defaultValue, ChatColor.class);
     }
 

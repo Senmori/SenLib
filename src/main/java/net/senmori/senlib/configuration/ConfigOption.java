@@ -3,7 +3,6 @@ package net.senmori.senlib.configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public abstract class ConfigOption<T> implements IConfigOption<T> {
-
     protected final String key;
     protected T defaultValue;
     protected T currentValue;

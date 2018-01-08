@@ -13,7 +13,7 @@ public class StringListOption extends ListOption<String> {
         return new StringListOption(key, defaultValue);
     }
 
-    protected StringListOption(String key, List<String> defaultValue) {
+    public StringListOption(String key, List<String> defaultValue) {
         super(key, defaultValue);
     }
 
@@ -25,12 +25,10 @@ public class StringListOption extends ListOption<String> {
     @Override
     public void setValue(List list) {
         this.list.clear();
-        list.forEach(obj -> {
-            if(!(obj instanceof String)) {
-                return;
-            }
+        for(Object obj : list) {
+            if( !(obj instanceof String)) continue;
             this.list.add((String)obj);
-        });
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ public class WorldListOption extends StringListOption {
         return new WorldListOption(key, defaultValues);
     }
 
-    protected WorldListOption(String key, List<String> defaultValue) {
+    public WorldListOption(String key, List<String> defaultValue) {
         super(key, defaultValue);
     }
 

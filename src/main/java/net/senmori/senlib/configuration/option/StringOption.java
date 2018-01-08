@@ -9,7 +9,7 @@ public class StringOption extends ConfigOption<String> {
         return new StringOption(key, defaultValue);
     }
 
-    protected StringOption(String key, String defaultValue) {
+    public StringOption(String key, String defaultValue) {
         super(key, defaultValue, String.class);
     }
 

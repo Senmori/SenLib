@@ -19,7 +19,7 @@ public class VectorOption extends ConfigOption<Vector> {
         return new VectorOption(key, defaultVector, Vector.class);
     }
 
-    protected VectorOption(String key, Vector defaultValue, Class<Vector> typeClass) {
+    public VectorOption(String key, Vector defaultValue, Class<Vector> typeClass) {
         super(key, defaultValue, typeClass);
     }
 
