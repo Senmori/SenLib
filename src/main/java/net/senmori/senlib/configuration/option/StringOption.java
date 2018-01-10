@@ -1,5 +1,6 @@
 package net.senmori.senlib.configuration.option;
 
+import io.netty.util.internal.StringUtil;
 import net.senmori.senlib.configuration.ConfigOption;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -23,6 +24,11 @@ public class StringOption extends ConfigOption<String> {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean parse(String string) {
+        return !StringUtil.isNullOrEmpty((this.currentValue = string));
     }
 
     @Override

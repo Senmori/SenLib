@@ -1,6 +1,7 @@
 package net.senmori.senlib.configuration.option;
 
 import net.senmori.senlib.configuration.ConfigOption;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
@@ -56,6 +57,21 @@ public class VectorOption extends ConfigOption<Vector> {
             setValue(new Vector(radius, radius, radius));
         }
         return true;
+    }
+
+    @Override
+    public boolean parse(String string) {
+        if(string != null && !string.isEmpty() && NumberUtils.isParsable(string)) {
+            // it's a number
+            try {
+                int radius = NumberUtils.createInteger(string);
+                setValue(new Vector(radius, radius, radius));
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override

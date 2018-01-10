@@ -1,15 +1,18 @@
-package net.senmori.senlib;
+package net.senmori.senlib.configuration;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.senmori.senlib.configuration.ConfigOption;
+import com.google.common.collect.ImmutableMap;
+import net.senmori.senlib.configuration.option.SectionOption;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import sun.swing.SwingUtilities2;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class ConfigManager {
     private static final String NULL_CONFIG_KEY = "<NULL>";
@@ -27,23 +30,29 @@ public class ConfigManager {
         loadConfig();
     }
 
-
     public <T extends ConfigOption> T registerOption(String key, T option) {
         options.put(key, option);
         return option;
     }
 
-    public ConfigOption<?> getOption(String key) {
-        return options.get(key);
-    }
-
     @Nullable
     public ConfigOption<?> getOptionByPath(String path) {
-        return options.values().stream().filter(c -> c.getPath().equals(path)).limit(1).findFirst().orElse(null);
-    }
+        for(ConfigOption option : options.values()) {
+            if(option instanceof SectionOption) {
 
-    public String getConfigurationKey(ConfigOption option) {
-        return options.inverse().getOrDefault(option, ConfigManager.NULL_CONFIG_KEY);
+                SectionOption section = (SectionOption)option;
+                for(ConfigOption children : section.getOptions().values()) {
+
+                    if(path.equals(section.getPath() + "." + children.getPath())) {
+                        return children;
+                    }
+                }
+            }
+            if(option.getPath().equals(path)) {
+                return option;
+            }
+        }
+        return null;
     }
 
     public void loadConfig() {
@@ -75,5 +84,9 @@ public class ConfigManager {
 
     public File getConfigFile() {
         return configFile;
+    }
+
+    public Map<String, ConfigOption> getOptions() {
+        return ImmutableMap.copyOf(options);
     }
 }

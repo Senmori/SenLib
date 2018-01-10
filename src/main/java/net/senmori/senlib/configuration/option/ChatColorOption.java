@@ -34,6 +34,17 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
     }
 
     @Override
+    public boolean parse(String string) {
+        try {
+            ChatColor color = ChatColor.valueOf(string.toUpperCase());
+            setValue(color);
+        } catch(IllegalArgumentException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void save(FileConfiguration config) {
         config.set(getPath(), getValue().name().toLowerCase(Locale.ENGLISH));
     }

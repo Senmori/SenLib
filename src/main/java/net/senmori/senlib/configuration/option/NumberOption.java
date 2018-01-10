@@ -10,7 +10,7 @@ public class NumberOption extends ConfigOption<Number> {
         return new NumberOption(key, defaultValue);
     }
 
-    protected NumberOption(String key, Number defaultValue) {
+    public NumberOption(String key, Number defaultValue) {
         super(key, defaultValue, Number.class);
     }
 
@@ -19,10 +19,15 @@ public class NumberOption extends ConfigOption<Number> {
         if(!config.contains(getPath())) return false;
 
         String str = config.getString(getPath());
-        if(str != null && !str.isEmpty() && NumberUtils.isParsable(str)) {
+        return parse(str);
+    }
+
+    @Override
+    public boolean parse(String strValue) {
+        if(strValue != null && !strValue.isEmpty() && NumberUtils.isParsable(strValue)) {
             // it's a number
             try {
-                setValue(NumberUtils.createNumber(str));
+                setValue(NumberUtils.createNumber(strValue));
                 return true;
             } catch (NumberFormatException e) {
                 return false;

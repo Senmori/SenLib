@@ -26,6 +26,12 @@ public class BooleanOption extends ConfigOption<Boolean> {
     }
 
     @Override
+    public boolean parse(String string) {
+        setValue(Boolean.parseBoolean(string));
+        return true;
+    }
+
+    @Override
     public void save(FileConfiguration config) {
         config.set(getPath(), getValue());
     }

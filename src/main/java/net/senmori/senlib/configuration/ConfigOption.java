@@ -33,6 +33,17 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
         this.currentValue = value;
     }
 
+    public boolean parse(String strValue) {
+        T oldValue = this.currentValue;
+        try {
+            this.currentValue = getValueClass().cast(strValue);
+        } catch(ClassCastException e) {
+            this.currentValue = oldValue; // just in case
+            return false;
+        }
+        return true;
+    }
+
     public abstract boolean load(FileConfiguration config);
 
     public abstract void save(FileConfiguration config);
