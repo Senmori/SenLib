@@ -1,4 +1,4 @@
-package net.senmori.senlib;
+package net.senmori.senlib.util;
 
 import com.google.common.collect.AbstractIterator;
 import org.bukkit.Location;
@@ -10,6 +10,13 @@ public class BlockRegion {
 
     /**
      * Create an Iterable that returns all locations in the box specified by the given corners
+     * <br>
+     * This makes no guarantees about if that Location is valid. It only returns a location with the given coordinates.
+     * <br>
+     * the {@code from} location is used to set the world.
+     *
+     * @param from the first corner of this box.
+     * @param to the second corner of this box
      */
     public static Iterable<Location> getAllInBox(Location from, Location to) {
         return getAllInBox(from.getWorld(),

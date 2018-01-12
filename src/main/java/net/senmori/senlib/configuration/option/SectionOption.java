@@ -1,12 +1,14 @@
 package net.senmori.senlib.configuration.option;
 
 import com.google.common.collect.Maps;
+import net.senmori.senlib.LogHandler;
 import net.senmori.senlib.configuration.ConfigOption;
+import net.senmori.senlib.configuration.resolver.ObjectResolver;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SectionOption extends StringOption {
@@ -14,11 +16,16 @@ public abstract class SectionOption extends StringOption {
         super(key, defaultValue);
     }
 
-    private Map<String, ConfigOption> options = Maps.newHashMap();
-    private ConfigurationSection section;
+    protected Map<String, ConfigOption> options = Maps.newHashMap();
+    protected Map<Class, ObjectResolver> resolvers = Maps.newHashMap();
+    protected ConfigurationSection section;
 
     public Map<String, ConfigOption> getOptions() {
         return options;
+    }
+
+    public ObjectResolver getResolver(Class clazz) {
+        return resolvers.get(clazz);
     }
 
     public ConfigurationSection getSection() {
@@ -28,6 +35,11 @@ public abstract class SectionOption extends StringOption {
     public <T extends ConfigOption> T addOption(String key, T option) {
         options.put(key, option);
         return option;
+    }
+
+    public <T extends ObjectResolver> T addResolver(T objectResolver) {
+        resolvers.put(objectResolver.getValueClass(), objectResolver);
+        return objectResolver;
     }
 
     @Override
@@ -40,6 +52,7 @@ public abstract class SectionOption extends StringOption {
         return false; // NOOP
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean load(FileConfiguration config) {
         if(!config.contains(getPath())) return false;
@@ -49,13 +62,17 @@ public abstract class SectionOption extends StringOption {
 
         AtomicBoolean error = new AtomicBoolean(false);
         for(String node : section.getKeys(false)) {
-            if(!canLoadOption(node)) continue;
-
             getOptions().values().forEach(configOption -> {
                 if(configOption.getPath().equals(node)) {
-                   if(!configOption.parse(section.getString(node))) {
-                       error.set(true);
-                   }
+
+                    if(configOption.hasResolver()) {
+                        configOption.setValue(configOption.getResolver().resolve(section, node));
+                    } else {
+                        if(!configOption.parse(section.getString(node)) ) {
+                            error.set(true);
+                            LogHandler.info("Error loading config option " + configOption.toString());
+                        }
+                    }
                 }
             });
         }
@@ -68,26 +85,14 @@ public abstract class SectionOption extends StringOption {
 
     @Override
     public void save(FileConfiguration config) {
-        if(!config.isConfigurationSection(getPath())) {
+        if(section == null || !config.isConfigurationSection(getPath())) {
             // create the section
             section = config.createSection(getPath());
         }
-        for(String node : section.getKeys(false)) {
-
-            if(canLoadOption(node)) {
-                getOptions().values().forEach(opt -> {
-                    section.set(node + config.options().pathSeparator() + opt.getPath(), opt.getValue());
-                });
-            } else {
-                save(getSection());
-            }
-        }
+        save(section);
     }
 
-    private boolean canLoadOption(String node) {
-        return  !section.isList(node) ||
-                !section.isSet(node) ||
-                !section.isConfigurationSection(node) ||
-                !(section.get(node) instanceof ConfigurationSerializable);
+    public boolean hasResolver() {
+        return getOptions().values().stream().anyMatch(ConfigOption::hasResolver) || !resolvers.isEmpty();
     }
 }

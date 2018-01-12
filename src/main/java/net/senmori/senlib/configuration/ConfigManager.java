@@ -7,14 +7,13 @@ import net.senmori.senlib.configuration.option.SectionOption;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import sun.swing.SwingUtilities2;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-public class ConfigManager {
+public abstract class ConfigManager {
     private static final String NULL_CONFIG_KEY = "<NULL>";
 
     // class variables
@@ -27,7 +26,7 @@ public class ConfigManager {
         this.plugin = plugin;
         this.config = YamlConfiguration.loadConfiguration(configFile);
         this.configFile = configFile;
-        loadConfig();
+        load();
     }
 
     public <T extends ConfigOption> T registerOption(String key, T option) {
@@ -43,7 +42,7 @@ public class ConfigManager {
                 SectionOption section = (SectionOption)option;
                 for(ConfigOption children : section.getOptions().values()) {
 
-                    if(path.equals(section.getPath() + "." + children.getPath())) {
+                    if(path.equals(section.getPath() + getConfig().options().pathSeparator() + children.getPath())) {
                         return children;
                     }
                 }
@@ -55,19 +54,19 @@ public class ConfigManager {
         return null;
     }
 
-    public void loadConfig() {
+    public void load() {
         options.values().forEach(configOption -> configOption.load(getConfig()));
     }
 
-    public void saveConfig() {
+    public void save() {
         options.values().forEach( opt -> {
             opt.save(getConfig());
         });
 
-        save();
+        saveFile();
     }
 
-    private void save() {
+    private void saveFile() {
         try {
             getConfig().save(getConfigFile());
         } catch (IOException e) {

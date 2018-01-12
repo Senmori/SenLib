@@ -1,36 +1,28 @@
 package net.senmori.senlib.configuration.option;
 
 import net.senmori.senlib.configuration.ConfigOption;
+import net.senmori.senlib.configuration.resolver.ObjectResolver;
+import net.senmori.senlib.configuration.resolver.types.ChatColorResolver;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Locale;
+import java.util.Optional;
 
 public class ChatColorOption extends ConfigOption<ChatColor> {
-
-    public static ChatColorOption newOption(String key, ChatColor defaultValue) {
-        return new ChatColorOption(key, defaultValue);
-    }
+    private static final ChatColorResolver resolver = new ChatColorResolver();
 
     public ChatColorOption(String key, ChatColor defaultValue) {
         super(key, defaultValue, ChatColor.class);
+        setResolver(resolver);
     }
 
     @Override
     public boolean load(FileConfiguration config) {
         if(!config.contains(getPath())) return false;
-        // if it's not an '&' symbol
-        String str = config.getString(getPath());
-        if(str == null || str.isEmpty()) {
-            return false;
-        }
-        try {
-            ChatColor color = ChatColor.valueOf(config.getString(getPath()).toUpperCase());
-            setValue(color);
-            return getValue() == color;
-        } catch(IllegalArgumentException e) {
-            return false;
-        }
+
+        setValue(resolver.resolve(config, getPath()));
+        return this.currentValue != null;
     }
 
     @Override
@@ -47,6 +39,14 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
     @Override
     public void save(FileConfiguration config) {
         config.set(getPath(), getValue().name().toLowerCase(Locale.ENGLISH));
+    }
+
+    public boolean hasResolver() {
+        return true;
+    }
+
+    public ChatColorResolver getResolver() {
+        return resolver;
     }
 
     @Override

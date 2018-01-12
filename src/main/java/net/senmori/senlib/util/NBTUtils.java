@@ -1,4 +1,4 @@
-package net.senmori.senlib;
+package net.senmori.senlib.util;
 
 import com.google.common.base.CaseFormat;
 import net.minecraft.server.v1_12_R1.GenericAttributes;

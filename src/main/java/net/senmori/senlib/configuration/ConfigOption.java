@@ -1,12 +1,16 @@
 package net.senmori.senlib.configuration;
 
+import net.senmori.senlib.configuration.resolver.ObjectResolver;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import javax.annotation.Nullable;
 
 public abstract class ConfigOption<T> implements IConfigOption<T> {
     protected final String key;
     protected T defaultValue;
     protected T currentValue;
     protected Class<T> typeClass;
+    private ObjectResolver resolver = null;
 
     protected ConfigOption(String key, T defaultValue, Class<T> typeClass) {
         this.key = key;
@@ -42,6 +46,19 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
             return false;
         }
         return true;
+    }
+
+    public boolean hasResolver() {
+        return resolver != null;
+    }
+
+    @Nullable
+    public ObjectResolver getResolver() {
+        return resolver;
+    }
+
+    protected void setResolver(ObjectResolver resolver) {
+        this.resolver = resolver;
     }
 
     public abstract boolean load(FileConfiguration config);
