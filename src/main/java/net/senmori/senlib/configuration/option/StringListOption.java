@@ -24,10 +24,15 @@ public class StringListOption extends ListOption<String> {
 
     @Override
     public void setValue(List list) {
-        this.list.clear();
+        List<String> result = Lists.newArrayList();
         for(Object obj : list) {
-            if( !(obj instanceof String)) continue;
-            this.list.add((String)obj);
+            if( !(obj instanceof String) ) continue;
+            result.add((String)obj);
+        }
+
+        if(!result.isEmpty()) {
+            this.list.clear();
+            this.list.addAll(result);
         }
     }
 

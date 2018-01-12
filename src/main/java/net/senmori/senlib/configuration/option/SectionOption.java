@@ -59,20 +59,35 @@ public abstract class SectionOption extends StringOption {
                 }
             });
         }
-        return !error.get();
+        return !error.get() && load(getSection());
     }
+
+    public abstract boolean load(ConfigurationSection section);
+
+    public abstract boolean save(ConfigurationSection section);
 
     @Override
     public void save(FileConfiguration config) {
-        getOptions().values().forEach(option -> {
-            config.set(getPath() + "." + option.getPath(), option.getValue());
-        });
+        if(!config.isConfigurationSection(getPath())) {
+            // create the section
+            section = config.createSection(getPath());
+        }
+        for(String node : section.getKeys(false)) {
+
+            if(canLoadOption(node)) {
+                getOptions().values().forEach(opt -> {
+                    section.set(node + config.options().pathSeparator() + opt.getPath(), opt.getValue());
+                });
+            } else {
+                save(getSection());
+            }
+        }
     }
 
     private boolean canLoadOption(String node) {
-        return  section.isList(node) ||
-                section.isSet(node) ||
-                section.isConfigurationSection(node) ||
-                section.get(node) instanceof ConfigurationSerializable;
+        return  !section.isList(node) ||
+                !section.isSet(node) ||
+                !section.isConfigurationSection(node) ||
+                !(section.get(node) instanceof ConfigurationSerializable);
     }
 }
