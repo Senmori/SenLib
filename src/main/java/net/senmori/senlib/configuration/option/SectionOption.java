@@ -12,8 +12,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SectionOption extends StringOption {
-    protected SectionOption(String key, String defaultValue) {
-        super(key, defaultValue);
+    protected SectionOption(String key) {
+        super(key, key);
     }
 
     protected Map<String, ConfigOption> options = Maps.newHashMap();
