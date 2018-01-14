@@ -8,7 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class SectionOption extends StringOption {
@@ -35,6 +34,15 @@ public abstract class SectionOption extends StringOption {
     public <T extends ConfigOption> T addOption(String key, T option) {
         options.put(key, option);
         return option;
+    }
+
+    public ConfigOption getOptionByPath(String path) {
+        for (ConfigOption option : getOptions().values()) {
+            if (option.getPath().equals(path)) {
+                return option;
+            }
+        }
+        return null;
     }
 
     public <T extends ObjectResolver> T addResolver(T objectResolver) {
