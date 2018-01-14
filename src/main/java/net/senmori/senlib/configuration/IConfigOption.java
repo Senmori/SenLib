@@ -11,24 +11,24 @@ public interface IConfigOption<T> {
      * The current path for this option.
      * @return the path of this option
      */
-    public String getPath();
+    String getPath();
 
     /**
      * Gets the class that represents this option.
      * @return the class that represents this option.
      */
-    public Class<T> getValueClass();
+    Class<T> getValueClass();
 
     /**
      * Gets the current value for this option.<br>
      * If the current value is null, the default value will be returned.
      * @return the current value for this option
      */
-    public T getValue();
+    T getValue();
 
     /**
      * Set the value for this option.
      * @param value the new value
      */
-    public void setValue(T value);
+    void setValue(T value);
 }

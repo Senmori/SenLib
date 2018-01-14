@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public interface IConfigurable {
 
-    public boolean load(FileConfiguration config);
+    boolean load(FileConfiguration config);
 
-    public boolean save(FileConfiguration config);
+    boolean save(FileConfiguration config);
 }
