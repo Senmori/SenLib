@@ -38,7 +38,12 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
 
     @Override
     public void save(FileConfiguration config) {
-        config.set(getPath(), getValue().name().toLowerCase(Locale.ENGLISH));
+        if(hasResolver()) {
+            resolver.save(config, getPath(), getValue());
+        } else {
+            config.set(getPath(), getValue().name().toLowerCase());
+        }
+
     }
 
     public boolean hasResolver() {
@@ -47,6 +52,10 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
 
     public ChatColorResolver getResolver() {
         return resolver;
+    }
+
+    public void setResolver(ObjectResolver resolver) {
+        // NOOP
     }
 
     @Override

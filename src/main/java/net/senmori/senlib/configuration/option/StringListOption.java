@@ -9,10 +9,6 @@ import java.util.stream.Collectors;
 public class StringListOption extends ListOption<String> {
     protected List<String> list = Lists.newArrayList();
 
-    public static StringListOption newOption(String key, List<String> defaultValue) {
-        return new StringListOption(key, defaultValue);
-    }
-
     public StringListOption(String key, List<String> defaultValue) {
         super(key, defaultValue);
     }
@@ -33,6 +29,7 @@ public class StringListOption extends ListOption<String> {
         if(!result.isEmpty()) {
             this.list.clear();
             this.list.addAll(result);
+            validateListInternal();
         }
     }
 
@@ -44,6 +41,7 @@ public class StringListOption extends ListOption<String> {
         }
         list.clear();
         list.addAll(value);
+        this.list = validateList(list);
     }
 
     @Override
@@ -53,13 +51,13 @@ public class StringListOption extends ListOption<String> {
 
         List<String> list = config.getStringList(getPath());
         this.list.addAll(list == null ? Lists.newArrayList() : list);
+        validateListInternal();
         return true;
     }
 
     @Override
     public void save(FileConfiguration config) {
-        List<String> save = Lists.newArrayList();
-        save.addAll(list.stream().distinct().collect(Collectors.toList())); // don't allow duplicates
+        List<String> save = validateList(list);
         config.set(getPath(), save);
     }
 }

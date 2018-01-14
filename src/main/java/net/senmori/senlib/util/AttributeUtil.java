@@ -12,7 +12,7 @@ import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-public class NBTUtils {
+public class AttributeUtil {
 
     public static ItemStack addAttribute(Attribute attribute, AttributeModifier modifier, ItemStack stack, EquipmentSlot slot) {
         net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(stack);

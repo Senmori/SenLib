@@ -68,9 +68,14 @@ public abstract class SectionOption extends StringOption {
                     if(configOption.hasResolver()) {
                         configOption.setValue(configOption.getResolver().resolve(section, node));
                     } else {
-                        if(!configOption.parse(section.getString(node)) ) {
-                            error.set(true);
-                            LogHandler.info("Error loading config option " + configOption.toString());
+                        Object obj = section.get(node);
+                        if(resolvers.containsKey(obj.getClass())) {
+                            configOption.setValue(resolvers.get(obj.getClass()).resolve(section, node));
+                        } else {
+                            if(!configOption.parse(section.getString(node)) ) {
+                                error.set(true);
+                                LogHandler.warning("Error loading config option " + configOption.toString());
+                            }
                         }
                     }
                 }
@@ -78,10 +83,6 @@ public abstract class SectionOption extends StringOption {
         }
         return !error.get() && load(getSection());
     }
-
-    public abstract boolean load(ConfigurationSection section);
-
-    public abstract boolean save(ConfigurationSection section);
 
     @Override
     public void save(FileConfiguration config) {
@@ -91,6 +92,10 @@ public abstract class SectionOption extends StringOption {
         }
         save(section);
     }
+
+    public abstract boolean load(ConfigurationSection section);
+
+    public abstract boolean save(ConfigurationSection section);
 
     public boolean hasResolver() {
         return getOptions().values().stream().anyMatch(ConfigOption::hasResolver) || !resolvers.isEmpty();

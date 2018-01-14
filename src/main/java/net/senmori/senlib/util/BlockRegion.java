@@ -8,6 +8,25 @@ import java.util.Iterator;
 
 public class BlockRegion {
 
+    final Location from;
+    final Location to;
+    public BlockRegion(Location from, Location to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    public Location getFrom() {
+        return from.clone();
+    }
+
+    public Location getTo() {
+        return to.clone();
+    }
+
+    public Iterable<Location> getRegion() {
+        return getAllInBox(from, to);
+    }
+
     /**
      * Create an Iterable that returns all locations in the box specified by the given corners
      * <br>
@@ -18,13 +37,13 @@ public class BlockRegion {
      * @param from the first corner of this box.
      * @param to the second corner of this box
      */
-    public static Iterable<Location> getAllInBox(Location from, Location to) {
+    private Iterable<Location> getAllInBox(Location from, Location to) {
         return getAllInBox(from.getWorld(),
                            Math.min(from.getBlockX(), to.getBlockX()), Math.min(from.getBlockY(), to.getBlockY()), Math.min(from.getBlockZ(), to.getBlockZ()),
                            Math.max(from.getBlockX(), to.getBlockX()), Math.max(from.getBlockY(), to.getBlockY()), Math.max(from.getBlockZ(), to.getBlockZ()));
     }
 
-    public static Iterable<Location> getAllInBox(final World world, final int originX, final int originY, final int originZ, final int deltaX, final int deltaY, final int deltaZ) {
+    private Iterable<Location> getAllInBox(final World world, final int originX, final int originY, final int originZ, final int deltaX, final int deltaY, final int deltaZ) {
         return new Iterable<Location>() {
             public Iterator<Location> iterator() {
                 return new AbstractIterator<Location>() {

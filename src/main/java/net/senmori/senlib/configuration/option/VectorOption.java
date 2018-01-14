@@ -1,6 +1,7 @@
 package net.senmori.senlib.configuration.option;
 
 import net.senmori.senlib.configuration.ConfigOption;
+import net.senmori.senlib.configuration.resolver.ObjectResolver;
 import net.senmori.senlib.configuration.resolver.types.VectorResolver;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -45,7 +46,11 @@ public class VectorOption extends ConfigOption<Vector> {
 
     @Override
     public void save(FileConfiguration config) {
-        config.set(getPath(), getValue());
+        if(hasResolver()) {
+            resolver.save(config, getPath(), getValue());
+        } else {
+            config.set(getPath(), getValue());
+        }
     }
 
     public boolean hasResolver() {
@@ -54,5 +59,9 @@ public class VectorOption extends ConfigOption<Vector> {
 
     public VectorResolver getResolver() {
         return this.resolver;
+    }
+
+    public void setResolver(ObjectResolver resolver) {
+        // NOOP
     }
 }
