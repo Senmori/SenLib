@@ -85,12 +85,12 @@ public abstract class SectionOption extends StringOption {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean save(FileConfiguration config) {
         if(section == null || !config.isConfigurationSection(getPath())) {
             // create the section
             section = config.createSection(getPath());
         }
-        save(section);
+        return save(section);
     }
 
     public abstract boolean load(ConfigurationSection section);

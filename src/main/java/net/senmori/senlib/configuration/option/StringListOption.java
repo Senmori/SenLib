@@ -56,8 +56,9 @@ public class StringListOption extends ListOption<String> {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean save(FileConfiguration config) {
         List<String> save = validateList(list);
         config.set(getPath(), save);
+        return true;
     }
 }

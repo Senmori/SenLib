@@ -15,6 +15,11 @@ public class StringOption extends ConfigOption<String> {
     }
 
     @Override
+    public boolean parse(String string) {
+        return !StringUtil.isNullOrEmpty((this.currentValue = string));
+    }
+
+    @Override
     public boolean load(FileConfiguration config) {
         if(!config.contains(getPath())) return false;
 
@@ -27,12 +32,8 @@ public class StringOption extends ConfigOption<String> {
     }
 
     @Override
-    public boolean parse(String string) {
-        return !StringUtil.isNullOrEmpty((this.currentValue = string));
-    }
-
-    @Override
-    public void save(FileConfiguration config) {
+    public boolean save(FileConfiguration config) {
         config.set(getPath(), getValue());
+        return true;
     }
 }

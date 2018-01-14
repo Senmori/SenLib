@@ -18,14 +18,6 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
     }
 
     @Override
-    public boolean load(FileConfiguration config) {
-        if(!config.contains(getPath())) return false;
-
-        setValue(resolver.resolve(config, getPath()));
-        return this.currentValue != null;
-    }
-
-    @Override
     public boolean parse(String string) {
         try {
             ChatColor color = ChatColor.valueOf(string.toUpperCase());
@@ -37,13 +29,21 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean load(FileConfiguration config) {
+        if(!config.contains(getPath())) return false;
+
+        setValue(resolver.resolve(config, getPath()));
+        return this.currentValue != null;
+    }
+
+    @Override
+    public boolean save(FileConfiguration config) {
         if(hasResolver()) {
             resolver.save(config, getPath(), getValue());
         } else {
             config.set(getPath(), getValue().name().toLowerCase());
         }
-
+        return true;
     }
 
     public boolean hasResolver() {

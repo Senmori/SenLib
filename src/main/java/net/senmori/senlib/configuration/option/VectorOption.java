@@ -22,14 +22,6 @@ public class VectorOption extends ConfigOption<Vector> {
     }
 
     @Override
-    public boolean load(FileConfiguration config) {
-        if(!config.contains(getPath())) return false;
-
-        setValue(resolver.resolve(config, getPath()));
-        return this.currentValue != null;
-    }
-
-    @Override
     public boolean parse(String string) {
         if(string != null && !string.isEmpty() && NumberUtils.isParsable(string)) {
             // it's a number
@@ -45,12 +37,21 @@ public class VectorOption extends ConfigOption<Vector> {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean load(FileConfiguration config) {
+        if(!config.contains(getPath())) return false;
+
+        setValue(resolver.resolve(config, getPath()));
+        return this.currentValue != null;
+    }
+
+    @Override
+    public boolean save(FileConfiguration config) {
         if(hasResolver()) {
             resolver.save(config, getPath(), getValue());
         } else {
             config.set(getPath(), getValue());
         }
+        return true;
     }
 
     public boolean hasResolver() {

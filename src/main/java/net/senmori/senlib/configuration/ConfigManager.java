@@ -3,6 +3,7 @@ package net.senmori.senlib.configuration;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
 import net.senmori.senlib.configuration.option.SectionOption;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,12 +13,14 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
-public abstract class ConfigManager {
+public abstract class ConfigManager implements IConfigurable {
     private static final String NULL_CONFIG_KEY = "<NULL>";
 
     // class variables
     private final BiMap<String, ConfigOption> options = HashBiMap.create();
+    private final Set<IConfigurable> listeners = Sets.newHashSet();
     private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final File configFile;
@@ -26,12 +29,16 @@ public abstract class ConfigManager {
         this.plugin = plugin;
         this.config = YamlConfiguration.loadConfiguration(configFile);
         this.configFile = configFile;
-        load();
+        load(getConfig());
     }
 
     public <T extends ConfigOption> T registerOption(String key, T option) {
         options.put(key, option);
         return option;
+    }
+
+    public boolean registerListener(IConfigurable listener) {
+        return listeners.add(listener);
     }
 
     @Nullable
@@ -54,22 +61,31 @@ public abstract class ConfigManager {
         return null;
     }
 
-    public void load() {
-        options.values().forEach(configOption -> configOption.load(getConfig()));
+    public boolean load() {
+        return load(getConfig());
     }
 
-    public void save() {
-        options.values().forEach( opt -> {
-            opt.save(getConfig());
-        });
+    public boolean load(final FileConfiguration config) {
+        boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
+        boolean listeners = this.listeners.stream().allMatch(listener -> listener.load(config));
+        return values && listeners;
+    }
 
-        saveFile();
+    public boolean save() {
+        return save(getConfig());
+    }
+
+    public boolean save(final FileConfiguration config) {
+        boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
+        boolean listeners = this.listeners.stream().allMatch(listener -> listener.save(config));
+        return values && listeners;
     }
 
     private void saveFile() {
         try {
             getConfig().save(getConfigFile());
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

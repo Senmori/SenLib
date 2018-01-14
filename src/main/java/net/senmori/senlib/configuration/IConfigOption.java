@@ -31,17 +31,4 @@ public interface IConfigOption<T> {
      * @param value the new value
      */
     public void setValue(T value);
-
-    /**
-     * Load this option from a {@link FileConfiguration}.
-     * @param config the config to load from
-     * @return true if this option loaded sucessfully
-     */
-    public boolean load(FileConfiguration config);
-
-    /**
-     * Save this option to the passed {@link FileConfiguration}
-     * @param config the config file to save to
-     */
-    public void save(FileConfiguration config);
 }

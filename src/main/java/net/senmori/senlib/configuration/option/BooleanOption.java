@@ -32,7 +32,8 @@ public class BooleanOption extends ConfigOption<Boolean> {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean save(FileConfiguration config) {
         config.set(getPath(), getValue());
+        return true;
     }
 }

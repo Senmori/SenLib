@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.annotation.Nullable;
 
-public abstract class ConfigOption<T> implements IConfigOption<T> {
+public abstract class ConfigOption<T> implements IConfigOption<T>, IConfigurable {
     protected final String key;
     protected T defaultValue;
     protected T currentValue;
@@ -63,7 +63,7 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
 
     public abstract boolean load(FileConfiguration config);
 
-    public abstract void save(FileConfiguration config);
+    public abstract boolean save(FileConfiguration config);
 
     public String toString() {
         return "ConfigOption={Path=" + getPath() + ", Value=" + getValue().toString() + ", Type=" + getValueClass().getName() + "}";

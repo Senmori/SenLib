@@ -6,20 +6,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class NumberOption extends ConfigOption<Number> {
 
-    public static NumberOption newOption(String key, Number defaultValue) {
-        return new NumberOption(key, defaultValue);
-    }
-
     public NumberOption(String key, Number defaultValue) {
         super(key, defaultValue, Number.class);
-    }
-
-    @Override
-    public boolean load(FileConfiguration config) {
-        if(!config.contains(getPath())) return false;
-
-        String str = config.getString(getPath());
-        return parse(str);
     }
 
     @Override
@@ -37,7 +25,16 @@ public class NumberOption extends ConfigOption<Number> {
     }
 
     @Override
-    public void save(FileConfiguration config) {
+    public boolean load(FileConfiguration config) {
+        if(!config.contains(getPath())) return false;
+
+        String str = config.getString(getPath());
+        return parse(str);
+    }
+
+    @Override
+    public boolean save(FileConfiguration config) {
         config.set(getPath(), getValue());
+        return true;
     }
 }
