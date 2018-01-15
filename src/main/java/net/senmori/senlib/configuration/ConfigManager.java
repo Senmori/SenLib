@@ -15,12 +15,11 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class ConfigManager implements IConfigurable {
+public abstract class ConfigManager {
     private static final String NULL_CONFIG_KEY = "<NULL>";
 
     // class variables
     private final BiMap<String, ConfigOption> options = HashBiMap.create();
-    private final Set<IConfigurable> listeners = Sets.newHashSet();
     private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final File configFile;
@@ -29,16 +28,12 @@ public abstract class ConfigManager implements IConfigurable {
         this.plugin = plugin;
         this.config = YamlConfiguration.loadConfiguration(configFile);
         this.configFile = configFile;
-        load(getConfig());
+        this.load(getConfig());
     }
 
     public <T extends ConfigOption> T registerOption(String key, T option) {
         options.put(key, option);
         return option;
-    }
-
-    public boolean registerListener(IConfigurable listener) {
-        return listeners.add(listener);
     }
 
     @Nullable
@@ -67,8 +62,7 @@ public abstract class ConfigManager implements IConfigurable {
 
     public boolean load(final FileConfiguration config) {
         boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
-        boolean listeners = this.listeners.stream().allMatch(listener -> listener.load(config));
-        return values && listeners;
+        return values;
     }
 
     public boolean save() {
@@ -77,8 +71,7 @@ public abstract class ConfigManager implements IConfigurable {
 
     public boolean save(final FileConfiguration config) {
         boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
-        boolean listeners = this.listeners.stream().allMatch(listener -> listener.save(config));
-        return values && listeners;
+        return values;
     }
 
     private void saveFile() {

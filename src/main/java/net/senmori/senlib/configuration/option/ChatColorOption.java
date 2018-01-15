@@ -6,9 +6,6 @@ import net.senmori.senlib.configuration.resolver.types.ChatColorResolver;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Locale;
-import java.util.Optional;
-
 public class ChatColorOption extends ConfigOption<ChatColor> {
     private static final ChatColorResolver resolver = new ChatColorResolver();
 

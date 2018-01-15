@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import javax.annotation.Nullable;
 
-public abstract class ConfigOption<T> implements IConfigOption<T>, IConfigurable {
+public abstract class ConfigOption<T> implements IConfigOption<T> {
     protected final String key;
     protected T defaultValue;
     protected T currentValue;
