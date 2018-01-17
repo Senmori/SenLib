@@ -38,11 +38,9 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
     }
 
     public boolean parse(String strValue) {
-        T oldValue = this.currentValue;
         try {
             this.currentValue = getValueClass().cast(strValue);
         } catch(ClassCastException e) {
-            this.currentValue = oldValue; // just in case
             return false;
         }
         return true;

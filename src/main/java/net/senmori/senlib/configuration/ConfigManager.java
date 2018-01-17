@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 
 public abstract class ConfigManager {
-    private static final String NULL_CONFIG_KEY = "<NULL>";
 
     // class variables
     private final BiMap<String, ConfigOption> options = HashBiMap.create();
@@ -28,7 +27,6 @@ public abstract class ConfigManager {
         this.plugin = plugin;
         this.config = YamlConfiguration.loadConfiguration(configFile);
         this.configFile = configFile;
-        this.load(getConfig());
     }
 
     public <T extends ConfigOption> T registerOption(String key, T option) {
@@ -36,45 +34,11 @@ public abstract class ConfigManager {
         return option;
     }
 
-    @Nullable
-    public ConfigOption<?> getOptionByPath(String path) {
-        for(ConfigOption option : options.values()) {
-            if(option instanceof SectionOption) {
+    public abstract boolean load(final FileConfiguration config);
 
-                SectionOption section = (SectionOption)option;
-                for(ConfigOption children : section.getOptions().values()) {
+    public abstract boolean save(final FileConfiguration config);
 
-                    if(path.equals(section.getPath() + getConfig().options().pathSeparator() + children.getPath())) {
-                        return children;
-                    }
-                }
-            }
-            if(option.getPath().equals(path)) {
-                return option;
-            }
-        }
-        return null;
-    }
-
-    public boolean load() {
-        return load(getConfig());
-    }
-
-    public boolean load(final FileConfiguration config) {
-        boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
-        return values;
-    }
-
-    public boolean save() {
-        return save(getConfig());
-    }
-
-    public boolean save(final FileConfiguration config) {
-        boolean values = getOptions().values().stream().allMatch(opt -> opt.save(config));
-        return values;
-    }
-
-    private void saveFile() {
+    protected void saveFile() {
         try {
             getConfig().save(getConfigFile());
         } catch (IOException e) {

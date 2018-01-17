@@ -70,24 +70,29 @@ public abstract class SectionOption extends StringOption {
 
         AtomicBoolean error = new AtomicBoolean(false);
         for(String node : section.getKeys(false)) {
-            getOptions().values().forEach(configOption -> {
-                if(configOption.getPath().equals(node)) {
 
-                    if(configOption.hasResolver()) {
+            for (ConfigOption configOption : getOptions().values()) {
+
+                if (configOption.getPath().equals(node)) {
+
+                    if (configOption.hasResolver()) {
                         configOption.setValue(configOption.getResolver().resolve(section, node));
                     } else {
                         Object obj = section.get(node);
-                        if(resolvers.containsKey(obj.getClass())) {
+
+                        if (resolvers.containsKey(obj.getClass())) {
                             configOption.setValue(resolvers.get(obj.getClass()).resolve(section, node));
                         } else {
-                            if(!configOption.parse(section.getString(node)) ) {
+
+                            if (!configOption.parse(section.getString(node))) {
                                 error.set(true);
                                 LogHandler.warning("Error loading config option " + configOption.toString());
                             }
                         }
                     }
                 }
-            });
+
+            } // end for ConfigOption loop
         }
         return !error.get() && load(getSection());
     }
