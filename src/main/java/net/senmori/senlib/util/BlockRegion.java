@@ -1,15 +1,18 @@
 package net.senmori.senlib.util;
 
 import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Lists;
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class BlockRegion {
 
     final Location from;
     final Location to;
+    private List<Location> cachedRegion = null;
     public BlockRegion(Location from, Location to) {
         this.from = from;
         this.to = to;
@@ -24,7 +27,11 @@ public class BlockRegion {
     }
 
     public Iterable<Location> getRegion() {
-        return getAllInBox(from, to);
+        if(cachedRegion != null) {
+            return cachedRegion;
+        }
+        cachedRegion = Lists.newArrayList(getAllInBox(from, to));
+        return cachedRegion;
     }
 
     /**
@@ -40,7 +47,8 @@ public class BlockRegion {
     private Iterable<Location> getAllInBox(Location from, Location to) {
         return getAllInBox(from.getWorld(),
                            Math.min(from.getBlockX(), to.getBlockX()), Math.min(from.getBlockY(), to.getBlockY()), Math.min(from.getBlockZ(), to.getBlockZ()),
-                           Math.max(from.getBlockX(), to.getBlockX()), Math.max(from.getBlockY(), to.getBlockY()), Math.max(from.getBlockZ(), to.getBlockZ()));
+                           Math.max(from.getBlockX(), to.getBlockX()), Math.max(from.getBlockY(), to.getBlockY()), Math.max(from.getBlockZ(), to.getBlockZ())
+                          );
     }
 
     private Iterable<Location> getAllInBox(final World world, final int originX, final int originY, final int originZ, final int deltaX, final int deltaY, final int deltaZ) {

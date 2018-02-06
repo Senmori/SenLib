@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
-public class ConfigurationResolver {
+public final class ConfigurationResolver {
 
     public static Map<Class, ObjectResolver> resolvers = Maps.newHashMap();
 
