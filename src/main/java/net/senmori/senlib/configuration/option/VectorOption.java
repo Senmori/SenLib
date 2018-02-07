@@ -21,6 +21,10 @@ public class VectorOption extends ConfigOption<Vector> {
         setResolver(resolver);
     }
 
+    public VectorOption(String key, Vector defaultValue, String description) {
+        super(key, defaultValue, Vector.class, description);
+    }
+
     @Override
     public boolean parse(String string) {
         if(string != null && !string.isEmpty() && NumberUtils.isParsable(string)) {

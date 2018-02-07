@@ -10,6 +10,10 @@ public class NumberOption extends ConfigOption<Number> {
         super(key, defaultValue, Number.class);
     }
 
+    public NumberOption(String key, Number defaultValue, String description) {
+        super(key, defaultValue, Number.class, description);
+    }
+
     @Override
     public boolean parse(String strValue) {
         if(strValue != null && !strValue.isEmpty() && NumberUtils.isParsable(strValue)) {

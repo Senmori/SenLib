@@ -11,12 +11,18 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
     protected T currentValue;
     protected Class<T> typeClass;
     private ObjectResolver resolver = null;
+    private String description = "";
 
     protected ConfigOption(String key, T defaultValue, Class<T> typeClass) {
         this.key = key;
         this.defaultValue = defaultValue;
         this.currentValue = this.defaultValue;
         this.typeClass = typeClass;
+    }
+
+    protected ConfigOption(String key, T defaultValue, Class<T> typeClass, String description) {
+        this(key, defaultValue, typeClass);
+        this.description = description;
     }
 
     @Override
@@ -27,6 +33,14 @@ public abstract class ConfigOption<T> implements IConfigOption<T> {
     @Override
     public Class<T> getValueClass() {
         return typeClass;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public T getValue() {

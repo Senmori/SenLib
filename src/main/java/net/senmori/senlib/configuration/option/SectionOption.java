@@ -15,6 +15,10 @@ public abstract class SectionOption extends StringOption {
         super(key, key);
     }
 
+    protected SectionOption(String key, String description) {
+        super(key, key, description);
+    }
+
     protected Map<String, ConfigOption> options = Maps.newHashMap();
     protected Map<Class, ObjectResolver> resolvers = Maps.newHashMap();
     protected ConfigurationSection section;

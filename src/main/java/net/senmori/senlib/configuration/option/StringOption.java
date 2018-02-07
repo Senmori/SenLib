@@ -6,12 +6,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class StringOption extends ConfigOption<String> {
 
-    public static StringOption newOption(String key, String defaultValue) {
-        return new StringOption(key, defaultValue);
-    }
-
     public StringOption(String key, String defaultValue) {
         super(key, defaultValue, String.class);
+    }
+
+    public StringOption(String key, String defaultValue, String description) {
+        super(key, defaultValue, String.class, description);
     }
 
     @Override

@@ -14,6 +14,11 @@ public abstract class ListOption<V> extends ConfigOption<List> {
         this.list = defaultValue;
     }
 
+    protected ListOption(String key, List<V> defaultValue, String description) {
+        super(key, defaultValue, List.class, description);
+        this.list = defaultValue;
+    }
+
     @Override
     public List<V> getValue() {
         return list;

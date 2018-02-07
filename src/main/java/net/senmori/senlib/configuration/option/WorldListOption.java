@@ -5,13 +5,12 @@ import org.bukkit.World;
 import java.util.List;
 
 public class WorldListOption extends StringListOption {
-
-    public static WorldListOption newOption(String key, List<String> defaultValues) {
-        return new WorldListOption(key, defaultValues);
-    }
-
     public WorldListOption(String key, List<String> defaultValue) {
         super(key, defaultValue);
+    }
+
+    public WorldListOption(String key, List<String> defaultValue, String description) {
+        super(key, defaultValue, description);
     }
 
     public boolean excludeWorld(World world) {

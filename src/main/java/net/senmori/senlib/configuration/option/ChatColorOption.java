@@ -14,6 +14,11 @@ public class ChatColorOption extends ConfigOption<ChatColor> {
         setResolver(resolver);
     }
 
+    public ChatColorOption(String key, ChatColor defaultValue, String description) {
+        super(key, defaultValue, ChatColor.class, description);
+        setResolver(resolver);
+    }
+
     @Override
     public boolean parse(String string) {
         try {

@@ -13,6 +13,10 @@ public class StringListOption extends ListOption<String> {
         super(key, defaultValue);
     }
 
+    public StringListOption(String key, List<String> defaultValue, String description) {
+        super(key, defaultValue, description);
+    }
+
     @Override
     public List<String> getValue() {
         return list;
