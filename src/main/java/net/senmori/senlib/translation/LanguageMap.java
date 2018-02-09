@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -129,7 +130,7 @@ public final class LanguageMap {
     public String translateKeyFormatted(String key, boolean formatColor, Object... format) {
         String s = this.tryTranslateKey(key, formatColor);
         try {
-            return String.format(s, format);
+            return MessageFormat.format(key, format);
         } catch (IllegalArgumentException e) {
             return s;
         }
