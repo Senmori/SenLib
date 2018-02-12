@@ -39,7 +39,7 @@ public class BlockRegion {
      * <br>
      * This makes no guarantees about if that Location is valid. It only returns a location with the given coordinates.
      * <br>
-     * the {@code from} location is used to set the world.
+     * The {@code from} location is used to set the world.
      *
      * @param from the first corner of this box.
      * @param to the second corner of this box
