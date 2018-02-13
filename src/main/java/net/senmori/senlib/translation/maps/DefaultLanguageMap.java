@@ -1,9 +1,13 @@
 package net.senmori.senlib.translation.maps;
 
 import com.google.common.collect.Iterables;
+import net.senmori.senlib.LogHandler;
 import net.senmori.senlib.translation.AbstractLanguageMap;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -17,14 +21,17 @@ import java.util.Iterator;
 public final class DefaultLanguageMap extends AbstractLanguageMap<InputStream> {
 
     @Override
-    protected void loadLanguage(InputStream stream) {
+    public void loadLanguage(InputStream stream) {
+        if(stream == null) {
+            throw new IllegalArgumentException("InputStream cannot be null for " + this.getClass().getSimpleName());
+        }
         try {
             Iterator<String> iter = IOUtils.readLines(stream, StandardCharsets.UTF_8).iterator();
 
             while(iter.hasNext()) {
                 String line = iter.next();
 
-                if(!line.isEmpty() && line.startsWith( Character.toString(COMMENT_CHAR ) ) ) {
+                if(!line.isEmpty() && !line.startsWith( Character.toString(COMMENT_CHAR ) ) ) {
                     String[] split = Iterables.toArray(EQUAL_SPLITTER.split(line), String.class);
                     if(split != null && split.length >= 2) {
                         String key = split[0];
@@ -47,5 +54,18 @@ public final class DefaultLanguageMap extends AbstractLanguageMap<InputStream> {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public InputStream parseInput(Object input) {
+        if(input instanceof File) {
+            File file = (File)input;
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

@@ -8,30 +8,35 @@ import net.senmori.senlib.translation.maps.YamlLanguageMap;
 import java.util.Map;
 
 public final class LanguageLoader {
-    private static final LanguageLoader INSTANCE = new LanguageLoader();
-
-    public static LanguageLoader getInstance() {
-        return INSTANCE;
+    static {
+        fileTypeAssociations = Maps.newHashMap();
+        fileTypeMap = Maps.newHashMap();
+        associate(FileType.JSON, JsonLanguageMap.class);
+        associate(FileType.LANG, DefaultLanguageMap.class);
+        associate(FileType.YAML, YamlLanguageMap.class);
+        associate(FileType.INI, DefaultLanguageMap.class);
+        associate(FileType.PROPERTIES, DefaultLanguageMap.class);
     }
 
-    private final Map<LanguageFileType, Class<? extends AbstractLanguageMap>> fileTypeAssociations = Maps.newHashMap();
+    private static final Map<FileType, Class<? extends AbstractLanguageMap>> fileTypeAssociations;
+    private static final Map<String, FileType> fileTypeMap;
 
-    private LanguageLoader() {
-        associate(LanguageFileType.JSON, JsonLanguageMap.class);
-        associate(LanguageFileType.LANG, DefaultLanguageMap.class);
-        associate(LanguageFileType.YAML, YamlLanguageMap.class);
+    private LanguageLoader() { }
+
+    public static FileType getLanguageFileType(String fileExtension) {
+        return fileTypeMap.get(fileExtension.toLowerCase());
     }
 
-    public void associate(LanguageFileType type, Class<? extends AbstractLanguageMap> clazz) {
+    public static void associate(FileType type, Class<? extends AbstractLanguageMap> clazz) {
         fileTypeAssociations.putIfAbsent(type, clazz);
+        fileTypeMap.putIfAbsent(type.getExtension(), type);
     }
 
-    public <T extends AbstractLanguageMap> T loadLanguage(LanguageFileType type) {
+    public static <T extends AbstractLanguageMap> T loadLanguage(FileType type) {
         Class<? extends AbstractLanguageMap> clazz = fileTypeAssociations.get(type);
-        if(clazz != null) {
+        if (clazz != null) {
             try {
-                AbstractLanguageMap instance = clazz.newInstance();
-                return (T) instance;
+                return (T)clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

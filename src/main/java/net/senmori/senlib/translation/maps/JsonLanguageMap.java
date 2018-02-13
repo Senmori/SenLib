@@ -9,8 +9,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
+import net.senmori.senlib.LogHandler;
 import net.senmori.senlib.translation.AbstractLanguageMap;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
@@ -23,7 +27,10 @@ public class JsonLanguageMap extends AbstractLanguageMap<InputStream> {
     private static final String JSON_COMMENT_KEY = "__";
 
     @Override
-    protected void loadLanguage(InputStream input) {
+    public void loadLanguage(InputStream input) {
+        if(input == null) {
+            throw new IllegalArgumentException("InputStream cannot be null for " + this.getClass().getSimpleName());
+        }
         try {
             JsonObject object = gson.fromJson( new JsonReader( new InputStreamReader( input ) ), JsonObject.class );
             if(object.size() < 1) {
@@ -33,6 +40,19 @@ public class JsonLanguageMap extends AbstractLanguageMap<InputStream> {
         } catch (JsonIOException | JsonSyntaxException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public InputStream parseInput(Object input) {
+        if(input instanceof File) {
+            File file = (File)input;
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private void traverseObject(JsonObject jsonObject) {
