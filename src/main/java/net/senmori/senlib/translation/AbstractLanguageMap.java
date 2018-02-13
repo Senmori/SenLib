@@ -34,8 +34,11 @@ public abstract class AbstractLanguageMap<T> implements LanguageMap<T> {
     @Override
     public String translate(String key, boolean formatColor, Object... args) {
         String s = this.tryTranslateKey(key, formatColor);
+        if(s == null) {
+            return key;
+        }
         try {
-            return MessageFormat.format(key, args);
+            return MessageFormat.format(s, args);
         } catch (IllegalArgumentException e) {
             return s;
         }
@@ -53,7 +56,7 @@ public abstract class AbstractLanguageMap<T> implements LanguageMap<T> {
 
     private String tryTranslateKey(String key, boolean formatColor) {
         String s = this.languageMap.get(key);
-        if(formatColor && s != null) {
+        if(s != null && formatColor) {
             s = ChatColor.translateAlternateColorCodes(getColorKey(), s);
         }
         return s == null ? key : s;
